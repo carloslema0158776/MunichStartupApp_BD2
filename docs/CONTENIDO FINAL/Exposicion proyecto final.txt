@@ -1,0 +1,68 @@
+x1. ESTRUCTURAS
+Dim_inversor: Sus datos provienen de los oltp persona, inversor, persona_rol, roles.
+Use string_agg para juntar varios texto en uno solo.
+Ejemplo: Si hay un caso de k alguien es mentor inversor, tendríamos dos filas para esa persona con el string_agg evitamos esto.
+
+Esto evita duplicidad.
+En el aplicativo hace que los montos no se multipliquen por error.
+
+
+Dim_Startup: Proviene de los oltp startup, mentor, emprendedor, oferta.
+
+Bien se creo la estructura de esta dimension, en spoon se realizo subconsultas para que la dimension llegue con números. 
+En el aplicativo ayuda a comparar startups.
+
+
+Fact_inversion: Sale del oltp inversion y financiación.
+Este es el hecho el encargado de unir todas las dimensiones mediante las fks
+
+En spoon es el que hace la búsqueda para asignar a cada inversion.
+Y en el aplicativo es la fuente de todos los graficos.
+
+
+
+
+2. LA LOGICA ETL
+Use coalesce este se encarga de revisar los valores y devolver el primero que no sea nulo.
+La aplique en nombre_rol, para indicar sin rol.
+(Cantidad mentores,0), es decir si no se detecta mentores se lo pone como 0.
+
+Row_number, asigna un num único y ordenado a cada fila.
+En fact_inversion, las inversiones no tenían un origen, por eso use row_number over() para crear el id_inversion_fact, esto ayuda a identificarlo mejor.
+
+Database lookup sire para la toma de un dato de un flujo como la fecha y buscar un equivalente en otra tabla.
+El lookup va a la dim_tiempo y busca esa fila para traer el tiempo.
+En spoon fue usado para conectar la fecha de la inversion con la tabla tiempo.
+Esto sirve para la eficiencia, ya que facilita la búsqueda por un num.
+
+
+
+3. PROBLEMAS RESUELTOS
+solucione la duplicidad por roles, gracias a string_agg para agruparlas en una celda, con esto evite que una persona apareciera en dos filas distintas si tiene dos cargos.
+Gracias a eso el dashboard muestra el monto exacto invertido por persona.
+
+Consistencia de métricas, aplique coalesce para forzar que los vacíos sean 0, gracias a eso las formulas matemáticas siguen funcionando y no se topan con un NULL.
+Gracias a eso los KPIS, que son los indicadores de promedio de inversion o cantidad de startups siempre darán un numero y no un error.
+Tambien se puede comparar un startup con 10 mentores frente a uno con 0, sin coalesce no podría hacer esto, ya que seria 10 vs NULL.
+
+Finalmente la integración de hecho, diseñe el flujo para obtener cada clave ID, desde su fuente correspondiente y validar las dimensiones. Gracias a eso me asegure que no existan inversiones huérfanas. Es decir relacionados a un inversor real o startup real.
+
+
+
+
+4. RESULTADOS Y DASHBOARD
+Reporte inversion por startup, este reporte existe gracias a dim_startup, se encuentra en la imagen 24.
+Esto sirve para identificar donde se esta moviendo el dinero.
+En el aplicativo es el grafico que ayuda a decidir sectores o empresas.
+
+
+Reporte de inversion por inversor
+Se encuentra en la imagen 26 del pdf, depende del dim_inversor, gracias al uso de string_agg, este reporte muestra una lista limpia de personas.
+En el aplicativo permite crear programas o alianza con los inversores mas activos.
+
+
+Filtros que aplique fue ubicación, estado, roles el cual nos sirvió para la exploración de datos, gracias a que añadi columnas como ubicacion_startup, estado_startup y nombre_rol.
+El filtro ubicación ayuda para ver si la inversion es de munich o de otro lugar.
+Y el filtro estado permite ver cuanto dinero hay.
+En el aplicativo le da libertad al usuario, ya ue evita ver una lista gigante de datos.
+

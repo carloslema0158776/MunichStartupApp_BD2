@@ -1,0 +1,38 @@
+Se agg tipo_inversor de la tabla inversor a la tabla persona (tecnica aplicada revisar)
+
+nombre_rol varchar(20) de la tabla roles a la tabla persona.
+
+nombre institución varchar(50) de la tabla institución a la tabla persona.
+
+tipo institución varchar (50) de la tabla institución a la tabla persona.
+
+
+
+Se agg los siguientes a la tabla dim startup
+tipo_oferta varchar(50) de la tabla oferta.
+
+especialidad varchar (50) de la tabla mentor.
+
+nivel_educacion varchar (30) de la tabla emprendedor.
+
+cantidad_mentores
+cantidad_emprendedores
+cantidad_ofertas
+precio_promedio_oferta
+
+
+
+
+
+
+En dim_financiacion
+se agrego un atributo derivado de fecha inicio y cierre llamado duración_financiacion.
+
+Se borro el pk/fk id_financiacion porque ya estaba en la tabla de hechos y eso nos da redundancia.
+
+
+
+
+
+En dim_institucion
+

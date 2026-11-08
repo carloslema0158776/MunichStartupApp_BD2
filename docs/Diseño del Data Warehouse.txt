@@ -1,0 +1,55 @@
+Diseño del Data Warehouse
+Modelo a usar y su razon.
+
+La idea principal
+En el modelo estrella las dimensiones están más desnormalizadas, entonces:
+
+hay menos joins
+las consultas son más fáciles
+los reportes y dashboards salen más rápido
+el modelo se entiende mejor al exponerlo
+
+En cambio, en el copo de nieve las dimensiones se vuelven a normalizar y se parten en más tablas, entonces:
+
+hay más relaciones
+más complejidad
+más joins
+más dificultad al hacer ETL y consultas
+
+En tu caso, por qué estrella sí conviene
+Tu hecho central es Fact_Inversion.
+Lo que quieres analizar es algo como:
+
+monto invertido por startup
+monto invertido por institución
+monto invertido por tiempo
+monto invertido por tipo de inversor
+
+Para ese tipo de análisis, el modelo estrella funciona mejor porque las dimensiones quedan listas para consultar sin estar saltando entre muchas tablas.
+
+Por qué no copo de nieve
+Si usaras copo de nieve, por ejemplo:
+
+Dim_Inversor podría separarse en persona, rol, institución
+Dim_Startup podría separarse en startup, oferta, mentor, emprendedor
+Dim_Tiempo incluso podría fragmentarse
+
+Eso haría el modelo más parecido al OLTP, cuando justamente el DW busca lo contrario: facilitar el análisis.
+
+Puedes poner algo así:
+
+Se eligió el modelo estrella porque ofrece una estructura más simple, comprensible y eficiente para el análisis de datos. Al desnormalizar las dimensiones, se reducen las uniones entre tablas y se facilita la construcción de consultas, reportes y dashboards. En comparación, el modelo copo de nieve introduce mayor complejidad al normalizar las dimensiones, lo cual dificulta la explotación analítica y el proceso ETL.
+
+En una línea
+Usaron estrella porque está mejor orientado a análisis; el copo de nieve habría metido complejidad innecesaria.
+
+Si quieres, te doy una versión todavía más corta, como para decirla en exposición.
+
+
+
+
+
+
+
+
+
